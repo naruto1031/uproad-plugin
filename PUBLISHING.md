@@ -36,21 +36,36 @@ The server name must match the authentication method:
 
 Domain-based is what `server.json` currently uses, because it ties the server to the product rather than to a GitHub account. Switching to GitHub auth means changing the `name` field and running `mcp-publisher login github` instead.
 
-```bash
-brew install mcp-publisher
+`key.pem` has already been generated in this directory (gitignored). The TXT
+record it produced is:
 
-# Domain auth. Two traps, both of which produce unhelpful errors:
-#  - the TXT record goes on the APEX (uproad.design), not under a selector
-#    such as _mcp-auth.uproad.design
-#  - macOS ships LibreSSL, which cannot do Ed25519. Use OpenSSL 3 explicitly,
-#    or take the ECDSA P-384 path in the registry docs.
-/opt/homebrew/opt/openssl@3/bin/openssl genpkey -algorithm Ed25519 -out key.pem
-PUBLIC_KEY="$(/opt/homebrew/opt/openssl@3/bin/openssl pkey -in key.pem -pubout -outform DER | tail -c 32 | base64)"
-echo "uproad.design. IN TXT \"v=MCPv1; k=ed25519; p=${PUBLIC_KEY}\""
-# add that record, wait for propagation, then:
+```
+host:  uproad.design        (apex — no subdomain, no selector)
+value: v=MCPv1; k=ed25519; p=cg8tOXaw0C+r21oZSRDjT4OGX3fC8y4pHhZHWTl5nsw=
+```
+
+Add that at the DNS provider, wait for propagation, then:
+
+```bash
+brew install mcp-publisher   # already installed on the author's machine
+mcp-publisher validate       # ✅ as of 2026-07-31
 mcp-publisher login dns --domain uproad.design --private-key ./key.pem
 mcp-publisher publish
 ```
+
+To regenerate the key (which invalidates the record above):
+
+```bash
+# The record goes on the APEX. Under a selector such as _mcp-auth.uproad.design
+# the registry never sees it and fails with a generic signature error.
+# macOS may ship LibreSSL, which cannot do Ed25519 — use OpenSSL 3 explicitly
+# (/opt/homebrew/opt/openssl@3/bin/openssl) or take the ECDSA P-384 path.
+openssl genpkey -algorithm Ed25519 -out key.pem
+openssl pkey -in key.pem -pubout -outform DER | tail -c 32 | base64
+```
+
+Note that `description` in `server.json` is capped at **100 characters** — the
+registry rejects longer values with a 422 that only shows up at `validate` time.
 
 Keep `key.pem` out of this repository — it is the proof of domain ownership. If you rotate keys, delete the old TXT record; a stale one is tried first and fails verification.
 

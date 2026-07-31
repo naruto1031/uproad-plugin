@@ -2,7 +2,7 @@
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "design.uproad/uproad",
   "title": "Uproad",
-  "description": "Share HTML prototypes as private links a client can open without an account, attach the spec alongside, and read back their pinned comments.",
+  "description": "Share prototypes as private links clients open without an account, attach specs, read comments.",
   "version": "1.0.0",
   "websiteUrl": "https://uproad.design",
   "repository": {
