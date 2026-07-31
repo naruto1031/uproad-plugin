@@ -1,0 +1,33 @@
+{
+  "name": "uproad",
+  "description": "Turn a client brief into a prototype and a spec, share one link the client can open without an account, and fold their comments back in.",
+  "version": "0.1.0",
+  "author": {
+    "name": "naruto1031",
+    "url": "https://uproad.design"
+  },
+  "homepage": "https://uproad.design",
+  "repository": "https://github.com/naruto1031/uproad-plugin",
+  "license": "MIT",
+  "keywords": [
+    "prototype",
+    "client-review",
+    "design",
+    "html"
+  ],
+  "userConfig": {
+    "api_token": {
+      "type": "string",
+      "title": "Uproad API token",
+      "description": "Create one at https://uproad.design/settings/tokens (workspace admins only). Starts with up_.",
+      "sensitive": true,
+      "required": true
+    },
+    "api_url": {
+      "type": "string",
+      "title": "Uproad URL",
+      "description": "Only change this if you run Uproad somewhere else.",
+      "default": "https://uproad.design"
+    }
+  }
+}

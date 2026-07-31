@@ -1,0 +1,19 @@
+{
+  "name": "uproad",
+  "owner": {
+    "name": "naruto1031",
+    "url": "https://uproad.design"
+  },
+  "description": "Prototype and spec work that ends in a link your client can actually open.",
+  "plugins": [
+    {
+      "name": "uproad",
+      "source": "./plugins/uproad",
+      "description": "Turn a client brief into a prototype and a spec, share one link the client can open without an account, and fold their comments back in.",
+      "version": "0.1.0",
+      "author": {
+        "name": "naruto1031"
+      }
+    }
+  ]
+}

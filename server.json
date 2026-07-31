@@ -1,0 +1,26 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "design.uproad/uproad",
+  "title": "Uproad",
+  "description": "Share HTML prototypes as private links a client can open without an account, attach the spec alongside, and read back their pinned comments.",
+  "version": "1.0.0",
+  "websiteUrl": "https://uproad.design",
+  "repository": {
+    "url": "https://github.com/naruto1031/uproad-plugin",
+    "source": "github"
+  },
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://uproad.design/mcp",
+      "headers": [
+        {
+          "name": "Authorization",
+          "description": "Bearer <token>. Create a token at https://uproad.design/settings/tokens (workspace admins only).",
+          "isRequired": true,
+          "isSecret": true
+        }
+      ]
+    }
+  ]
+}
