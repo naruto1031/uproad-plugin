@@ -17,15 +17,34 @@ You will be asked for an Uproad API token. Create one at [uproad.design/settings
 
 ### `/uproad:new`
 
-From meeting notes, a Slack paste, or a one-line idea:
+From meeting notes, a Slack paste, or a one-line idea — with **two stops for you** along the way:
 
-1. Writes a spec in Japanese — 背景・目的 / 対象ユーザー / 画面と導線 / 機能要件 / **確認事項**
-2. Builds a self-contained HTML prototype
-3. Pushes both to Uproad and returns a share link
+1. **Interviews you** one question at a time, each with a recommended answer, until the requirements stop moving. It reads what it can find instead of asking about it.
+2. Writes a spec in Japanese — 背景・目的 / 対象ユーザー / 画面と導線 / 機能要件 / **確認事項** — then **stops so you can correct it**.
+3. Builds a self-contained prototype, serves it locally, and **stops so you can look at it**. Stays in that loop until you approve.
+4. Only then pushes both to Uproad and returns a share link.
 
-The 確認事項 section is the part that earns a reply: every assumption made on the client's behalf is written back as a question they can answer.
+The stops are the point. A spec you have not corrected produces a prototype built on the wrong assumptions, and a prototype you have not seen should not reach a client.
+
+The 確認事項 section is what earns a reply: every assumption made on the client's behalf is written back as a question the client can answer.
 
 The prototype and the spec hang off the same design, so one link reaches both — the client sees the screens, and whoever implements it later sees what it was supposed to do.
+
+### Where files land
+
+One directory per design, so several sit side by side:
+
+```
+designs/
+  acme-lp/
+    index.html
+    spec.md
+  billing-dashboard/
+    index.html
+    spec.md
+```
+
+The local server runs from `designs/`, so every design is browsable at once.
 
 ### `/uproad:review`
 

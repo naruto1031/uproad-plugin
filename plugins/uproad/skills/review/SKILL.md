@@ -25,14 +25,14 @@ Comments carry `pin_x`/`pin_y` when the client pinned them to a spot on the prot
 
 ## 2. Make the changes
 
-1. `get_design_html` — always start from what is actually deployed, not from a local copy. Someone else may have pushed since.
+1. `get_design_html` — always start from what is actually deployed, not from whatever is on disk. Someone else may have pushed since. Write it into `designs/<slug>/index.html`, which is where designs live (one directory each, matching `/uproad:new`). Derive `<slug>` from the design's `external_key` when it has one.
 2. Apply the changes. Keep the edits tight; unrelated refactoring makes the next round harder to review.
-3. If the feedback changes what the thing *does* rather than how it looks, the spec is now wrong too. Fetch it with `get_doc` (`docs/spec.md`), update it, and push it back with `push_doc`. **A spec that silently drifts from the prototype is worse than no spec** — the next engineer trusts it.
+3. If the feedback changes what the thing *does* rather than how it looks, the spec is now wrong too. Fetch it with `get_doc` (`spec.md`), update `designs/<slug>/spec.md`, and push it back with `push_doc`. **A spec that silently drifts from the prototype is worse than no spec** — the next engineer trusts it.
 
 ## 3. Push and mark resolved
 
 1. `push_design` with the **same `design_id`**. This adds a version; the share link the client already has keeps working and now shows the new one.
-2. `push_doc` for any document you changed.
+2. `push_doc` for any document you changed (the spec is at `spec.md`).
 3. `resolve_comment` — **only for comments you actually addressed.** Leave questions and out-of-scope items unresolved. Resolving something you did not do erases the client's request without them knowing.
 
 ## 4. Report
