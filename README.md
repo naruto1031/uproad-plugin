@@ -52,8 +52,9 @@ When the comments come back:
 
 1. Reads the unresolved comments, including where on the page they were pinned
 2. Applies the change requests, and updates the spec if the behaviour changed
-3. Pushes a new version — **the share link does not change**
-4. Marks resolved only what was actually done
+3. Serves the fixes locally and **stops so you can check them** — the client's link is already in their inbox, so a wrong fix would reach them at once
+4. Pushes a new version — **the share link does not change**
+5. Marks resolved only what was actually done
 
 Questions and out-of-scope requests are handed back to you instead of being silently closed. The MCP tools cannot reply to a comment, so answering happens in the app.
 

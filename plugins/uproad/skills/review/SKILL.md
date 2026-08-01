@@ -1,10 +1,12 @@
 ---
-description: Read the unresolved client comments on an Uproad design, apply the changes, push the new version, and mark the ones you actually handled as resolved. Use when a client has left feedback or 赤入れ on a shared prototype and it needs folding back in.
+description: Read the unresolved client comments on an Uproad design, apply the changes, show them to you locally before anything reaches the client, then push the new version and mark the ones you actually handled as resolved. Use when a client has left feedback or 赤入れ on a shared prototype and it needs folding back in.
 ---
 
 # Close one review round
 
 The client left comments on a link you sent. This skill turns that into a new version they can look at, and leaves an honest record of what was and was not done.
+
+**There is one hard stop**: the fixes are shown to you locally before they replace what the client sees. The link is already in their inbox, so a wrong fix reaches them immediately.
 
 ## 1. Read what came back
 
@@ -27,15 +29,29 @@ Comments carry `pin_x`/`pin_y` when the client pinned them to a spot on the prot
 
 1. `get_design_html` — always start from what is actually deployed, not from whatever is on disk. Someone else may have pushed since. Write it into `designs/<slug>/index.html`, which is where designs live (one directory each, matching `/uproad:new`). Derive `<slug>` from the design's `external_key` when it has one.
 2. Apply the changes. Keep the edits tight; unrelated refactoring makes the next round harder to review.
-3. If the feedback changes what the thing *does* rather than how it looks, the spec is now wrong too. Fetch it with `get_doc` (`spec.md`), update `designs/<slug>/spec.md`, and push it back with `push_doc`. **A spec that silently drifts from the prototype is worse than no spec** — the next engineer trusts it.
+3. If the feedback changes what the thing *does* rather than how it looks, the spec is now wrong too. Fetch it with `get_doc` (`spec.md`) and update `designs/<slug>/spec.md`. **A spec that silently drifts from the prototype is worse than no spec** — the next engineer trusts it. Do not push it yet; it goes out with the prototype in step 4.
 
-## 3. Push and mark resolved
+## 3. Show it locally, then STOP
+
+Serve the designs directory and **leave the server running in the background**:
+
+```bash
+python3 -m http.server 4173 --directory designs
+```
+
+If that port is already serving the same `designs/` root, reuse it rather than starting a second one. Otherwise pick a free port.
+
+Give the user the direct URL (`http://localhost:4173/<slug>/`) and **stop, asking them to check the fixes.** Point out specifically what changed, so they know where to look.
+
+**Do not push until they approve.** The next step replaces what the client is currently looking at behind a link that is already in their inbox — a wrong fix arrives faster than a right one. Apply what comes back and show them again, staying in this loop until they say it is good.
+
+## 4. Push and mark resolved
 
 1. `push_design` with the **same `design_id`**. This adds a version; the share link the client already has keeps working and now shows the new one.
 2. `push_doc` for any document you changed (the spec is at `spec.md`).
 3. `resolve_comment` — **only for comments you actually addressed.** Leave questions and out-of-scope items unresolved. Resolving something you did not do erases the client's request without them knowing.
 
-## 4. Report
+## 5. Report
 
 In Japanese:
 
@@ -50,4 +66,5 @@ If nothing needs the client's input, say the round is closed.
 
 - **404 on the design** — it belongs to a different workspace than the API token. Tokens are per workspace.
 - **A comment will not resolve** — it may already be resolved, or belong to another design. Re-run `list_comments` and check.
+- **Port already in use** — another design's server may already be serving the same `designs/` root; reuse it. Otherwise pick a free port.
 - **The prototype has moved on since the comment** — a comment pinned to an element that no longer exists is still real feedback. Say which version it was left against and ask rather than guessing.
