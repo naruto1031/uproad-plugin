@@ -1,5 +1,5 @@
 ---
-description: Interview the user about a client brief until the requirements are settled, write a spec, build a working HTML prototype, review it locally with them, then push to Uproad and return a link the client can open without an account. Use when someone wants to build a proposal, mock-up, prototype, or 提案・たたき台 for a client.
+description: Interview the user about a client brief until the requirements are settled, write a spec, build a working HTML prototype, review it locally with them, then ask whether it goes out as a public share link or stays private to the workspace, and push to Uproad. Use when someone wants to build a proposal, mock-up, prototype, or 提案・たたき台 for a client.
 ---
 
 # Take a brief to a client-ready link
@@ -10,7 +10,7 @@ Four phases with **two hard stops**. Do not run them together. The stops exist b
 1. 要件を詰める (interview)
 2. Spec を書く ────────────── STOP: 人間が直す
 3. プロトタイプを作る → ローカルで見せる ── STOP: 人間がレビューする
-4. Uproad に push → 共有リンク
+4. 公開/非公開を選ぶ → Uproad に push → 共有リンク、または非公開のまま
 ```
 
 Work in Japanese with the user throughout.
@@ -76,14 +76,34 @@ Pick another port if 4173 is taken. Give the user the direct URL (`http://localh
 
 Apply what they come back with and show them again. **Stay in this loop until they say it is good.** Do not push a prototype the user has not approved — the next step puts it in front of their client.
 
-## Phase 4 — Push and hand over
+## Phase 4 — Decide who can see it, then push
 
-Only after approval:
+Only after approval.
+
+### 4a. Ask 公開 or 非公開 — before anything is pushed
+
+Ask once, in Japanese, and wait for the answer. Give your recommendation with it:
+
+- **公開** — Uproad issues a share link. Anyone holding the URL opens the prototype without an account and can leave pinned comments. This is the point when there is a client on the other end.
+- **非公開** — the design and the spec live in Uproad with no share link. Only signed-in members of the workspace can open it. For 社内の下書き, or anything not ready to leave the building.
+
+Recommend 公開 when the user has talked about a client or an outside reviewer, 非公開 when this is theirs alone for now.
+
+Ask **before** `push_design`, not once the link exists. Through these tools publishing only goes one way: `get_share_link` makes a design public and nothing here makes it private again — that is a toggle on the design's page in the app.
+
+One case the answer cannot fix: if your `external_key` matches a design that is **already public** (`list_designs` reports `is_public` per design), say so before pushing. The version you are about to push replaces what that existing link shows, and answering 非公開 now does not retract a link the client already has.
+
+### 4b. Push
 
 1. `list_projects` — if there is more than one, pick the one matching the client and say which you picked. One project, or no obvious match: leave `project` off.
 2. `push_design` — the contents of `designs/<slug>/index.html`, with `external_key` set to that same path. **This is what makes re-running safe**: the same key adds a version to the same design instead of creating a duplicate, so a link already sent to the client keeps working.
 3. `push_doc` — the spec, at `spec.md`.
-4. `get_share_link` — publishes the design and returns the URL. Safe to call repeatedly.
+
+A design created this way starts 非公開. Nothing is reachable from outside the workspace until 4c publishes it.
+
+### 4c. Hand over
+
+**公開を選んだ場合** — `get_share_link` publishes the design and returns the URL. Safe to call repeatedly.
 
 Report, in Japanese:
 
@@ -91,6 +111,16 @@ Report, in Japanese:
 - What you built, in two or three lines
 - **確認事項** — repeat them; this is what you want the client to respond to
 - The client needs no account, and can click anywhere on the prototype to leave a pinned comment
+
+**非公開を選んだ場合** — **do not call `get_share_link`.** Publishing is the whole job of that tool, and there is no undo through the tools.
+
+Report, in Japanese:
+
+- **The design's page in Uproad**, on its own line — `<Uproad URL>/designs/<design_id>`, using the id `push_design` returned. `<Uproad URL>` is `https://uproad.design` unless the plugin is configured against another instance
+- Say plainly that this page needs a sign-in to the workspace, so it is not a link to send to a client
+- What you built, in two or three lines
+- **確認事項** — repeat them, so they can be settled before this goes out
+- 公開 later is one toggle on that page, or re-run this skill and answer 公開
 
 Then offer `/uproad:review` for when the comments come back.
 
@@ -100,4 +130,5 @@ Then offer `/uproad:review` for when the comments come back.
 - **`title is required`** — you passed neither `design_id` nor a matching `external_key` and no title. Give a title on first push.
 - **`project not found`** — projects are never created implicitly. Run `list_projects` and use an existing name, or create it in the app.
 - **quota exceeded** — the workspace hit its storage limit. Free is 200MB.
+- **公開してしまったが非公開に戻したい** — the tools cannot take it back. Open the design in the app and turn the 公開 toggle off; the slug is kept, so publishing again later reuses the same URL.
 - **Port already in use** — another design's server is probably still running. Reuse it if it is serving the same `designs/` root; otherwise pick a free port.
