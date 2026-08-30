@@ -22,9 +22,12 @@ From meeting notes, a Slack paste, or a one-line idea — with **two stops for y
 1. **Interviews you** one question at a time, each with a recommended answer, until the requirements stop moving. It reads what it can find instead of asking about it.
 2. Writes a spec in Japanese — 背景・目的 / 対象ユーザー / 画面と導線 / 機能要件 / **確認事項** — then **stops so you can correct it**.
 3. Builds a self-contained prototype, serves it locally, and **stops so you can look at it**. Stays in that loop until you approve.
-4. Only then pushes both to Uproad and returns a share link.
+4. Asks whether this goes out **公開** (a share link the client opens without an account) or stays **非公開**
+   (visible only to signed-in members of your workspace), then pushes both to Uproad.
 
 The stops are the point. A spec you have not corrected produces a prototype built on the wrong assumptions, and a prototype you have not seen should not reach a client.
+
+The visibility question is asked before the push, not after: publishing through the MCP tools only goes one way, and taking a design back down is a toggle in the app.
 
 The 確認事項 section is what earns a reply: every assumption made on the client's behalf is written back as a question the client can answer.
 
