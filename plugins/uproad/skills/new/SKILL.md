@@ -65,6 +65,7 @@ designs/<slug>/index.html
 - Make it look finished. Real copy, plausible data, no `Lorem ipsum` and no `TODO`.
 - Responsive unless told otherwise.
 - Wire up the interactions the client is being asked to judge (tabs, modals, form states). Fake the data behind them.
+- **When the prototype has more than one screen in the one file**, give each screen its own container — `<section data-screen="driver-loading" hidden>` — and switch screens by toggling `hidden`, never by rebuilding the markup with `innerHTML`. Give every screen a heading of its own (`h1`–`h4`). Uproad pins a comment to "this element on this screen"; screens that can be told apart this way keep each pin on the screen it was left on, instead of surfacing on every screen that shares the structure.
 
 Then start a static server **from the `designs/` root** so every design is browsable, and **leave it running in the background**:
 
