@@ -16,7 +16,7 @@
       "headers": [
         {
           "name": "Authorization",
-          "description": "Bearer <token>. Create a token at https://uproad.design/settings/tokens (workspace admins only).",
+          "description": "Bearer <token>. Create a personal token at https://uproad.design/settings/personal-tokens (any member, reaches every workspace you belong to), or a workspace token at https://uproad.design/settings/tokens (admins only).",
           "isRequired": true,
           "isSecret": true
         }
