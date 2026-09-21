@@ -11,7 +11,9 @@ Take a client brief to a link the client can actually open — without leaving C
 /plugin install uproad@uproad
 ```
 
-You will be asked for an Uproad API token. Create one at [uproad.design/settings/tokens](https://uproad.design/settings/tokens) (workspace admins only) — it starts with `up_`. It is stored in secure storage, not in a settings file, and the plugin uses it to connect to Uproad's MCP server for you. There is no `claude mcp add` step.
+You will be asked for an Uproad API token. Create a **personal token** at [uproad.design/settings/personal-tokens](https://uproad.design/settings/personal-tokens) — any member can, and it starts with `upu_`. One personal token reaches every workspace you belong to, so if you work across several clients' workspaces you still configure the plugin once; `/uproad:new` asks which workspace a new design goes to only when there is more than one to choose from. It is stored in secure storage, not in a settings file, and the plugin uses it to connect to Uproad's MCP server for you. There is no `claude mcp add` step.
+
+(A workspace token — `up_`, issued by an admin under Settings → API Tokens — also works, but reaches only that one workspace. Keep those for CI.)
 
 ## What it does
 

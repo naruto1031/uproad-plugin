@@ -1,7 +1,7 @@
 {
   "name": "uproad",
   "description": "Turn a client brief into a prototype and a spec, share one link the client can open without an account, and fold their comments back in.",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "author": {
     "name": "naruto1031",
     "url": "https://uproad.design"
@@ -19,7 +19,7 @@
     "api_token": {
       "type": "string",
       "title": "Uproad API token",
-      "description": "Create one at https://uproad.design/settings/tokens (workspace admins only). Starts with up_.",
+      "description": "Create a personal token at https://uproad.design/settings/personal-tokens (any member; starts with upu_). It reaches every workspace you belong to. A workspace token (up_, admins only) also works but reaches one workspace.",
       "sensitive": true,
       "required": true
     },

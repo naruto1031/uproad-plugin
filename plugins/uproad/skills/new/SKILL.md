@@ -10,7 +10,7 @@ Four phases with **two hard stops**. Do not run them together. The stops exist b
 1. 要件を詰める (interview)
 2. Spec を書く ────────────── STOP: 人間が直す
 3. プロトタイプを作る → ローカルで見せる ── STOP: 人間がレビューする
-4. 公開/非公開を選ぶ → Uproad に push → 共有リンク、または非公開のまま
+4. 置き場所を確かめる → 公開/非公開を選ぶ → Uproad に push → 共有リンク、または非公開のまま
 ```
 
 Work in Japanese with the user throughout.
@@ -76,11 +76,22 @@ Pick another port if 4173 is taken. Give the user the direct URL (`http://localh
 
 Apply what they come back with and show them again. **Stay in this loop until they say it is good.** Do not push a prototype the user has not approved — the next step puts it in front of their client.
 
-## Phase 4 — Decide who can see it, then push
+## Phase 4 — Decide where it lives and who can see it, then push
 
 Only after approval.
 
-### 4a. Ask 公開 or 非公開 — before anything is pushed
+### 4a. Find where this design lives
+
+The token may reach more than one workspace (a personal token reaches every workspace the user belongs to). Nothing is remembered between sessions — Uproad itself is the record of where a design lives — so look it up:
+
+1. `list_designs` (no arguments). Every row carries its `workspace` and `external_key`. Look for a row whose `external_key` is exactly `designs/<slug>/index.html`.
+2. **Exactly one match** → this is a re-push. Its `workspace` is where it goes; nothing to ask. Note its `is_public` for 4b.
+3. **No match** → this is a new design. `list_workspaces`. One workspace → use it, say nothing. **More than one → ask once, in Japanese, which workspace it goes to**, with a recommendation: the one whose name matches the client from Phase 1, otherwise the one the user's other designs are in. Wait for the answer.
+4. **Two or more matches** (the same key exists in two workspaces) → ask which one. Never pick: pushing to the wrong one puts a new version behind a link some other client already has.
+
+Carry the chosen workspace's `id` into 4c. Passing the id rather than the name avoids the case where two workspaces share a name.
+
+### 4b. Ask 公開 or 非公開 — before anything is pushed
 
 Ask once, in Japanese, and wait for the answer. Give your recommendation with it:
 
@@ -91,17 +102,17 @@ Recommend 公開 when the user has talked about a client or an outside reviewer,
 
 Ask **before** `push_design`, not once the link exists. Through these tools publishing only goes one way: `get_share_link` makes a design public and nothing here makes it private again — that is a toggle on the design's page in the app.
 
-One case the answer cannot fix: if your `external_key` matches a design that is **already public** (`list_designs` reports `is_public` per design), say so before pushing. The version you are about to push replaces what that existing link shows, and answering 非公開 now does not retract a link the client already has.
+One case the answer cannot fix: if 4a found the design and it is **already public** (`is_public`), say so before pushing. The version you are about to push replaces what that existing link shows, and answering 非公開 now does not retract a link the client already has.
 
-### 4b. Push
+### 4c. Push
 
-1. `list_projects` — if there is more than one, pick the one matching the client and say which you picked. One project, or no obvious match: leave `project` off.
-2. `push_design` — the contents of `designs/<slug>/index.html`, with `external_key` set to that same path. **This is what makes re-running safe**: the same key adds a version to the same design instead of creating a duplicate, so a link already sent to the client keeps working.
-3. `push_doc` — the spec, at `spec.md`.
+1. `list_projects` with `workspace` set to the id from 4a — if there is more than one project, pick the one matching the client and say which you picked. One project, or no obvious match: leave `project` off.
+2. `push_design` — the contents of `designs/<slug>/index.html`, with `external_key` set to that same path and `workspace` set to the id from 4a. **The key is what makes re-running safe**: the same key adds a version to the same design instead of creating a duplicate, so a link already sent to the client keeps working. The workspace is required even on a re-push, because the same key could exist in another workspace too.
+3. `push_doc` — the spec, at `spec.md`. It takes `design_id`, so no workspace here.
 
-A design created this way starts 非公開. Nothing is reachable from outside the workspace until 4c publishes it.
+A design created this way starts 非公開. Nothing is reachable from outside the workspace until 4d publishes it.
 
-### 4c. Hand over
+### 4d. Hand over
 
 **公開を選んだ場合** — `get_share_link` publishes the design and returns the URL. Safe to call repeatedly.
 
@@ -126,7 +137,9 @@ Then offer `/uproad:review` for when the comments come back.
 
 ## When things fail
 
-- **401** — the API token is wrong or expired. It is set in the plugin's configuration (`/plugin` → uproad → configure), not in a file.
+- **401** — the API token is wrong or revoked. It is set in the plugin's configuration (`/plugin` → uproad → configure), not in a file. A personal token also stops working if the account was deleted.
+- **`workspace is required`** — the token reaches more than one workspace and `push_design` was called without `workspace`. The error lists the candidates; go back to 4a rather than guessing.
+- **`workspace not found`** — the token cannot reach that workspace (not a member, or the token was issued for a subset). `list_workspaces` shows what it can reach.
 - **`title is required`** — you passed neither `design_id` nor a matching `external_key` and no title. Give a title on first push.
 - **`project not found`** — projects are never created implicitly. Run `list_projects` and use an existing name, or create it in the app.
 - **quota exceeded** — the workspace hit its storage limit. Free is 200MB.
