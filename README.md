@@ -11,9 +11,11 @@ Take a client brief to a link the client can actually open — without leaving C
 /plugin install uproad@uproad
 ```
 
-You will be asked for an Uproad API token. Create a **personal token** at [uproad.design/settings/personal-tokens](https://uproad.design/settings/personal-tokens) — any member can, and it starts with `upu_`. One personal token reaches every workspace you belong to, so if you work across several clients' workspaces you still configure the plugin once; `/uproad:new` asks which workspace a new design goes to only when there is more than one to choose from. It is stored in secure storage, not in a settings file, and the plugin uses it to connect to Uproad's MCP server for you. There is no `claude mcp add` step.
+Nothing to paste. The first time a skill needs Uproad, Claude Code asks you to sign in: run `/mcp`, pick **uproad**, choose **Authenticate**, and a browser tab opens Uproad's consent screen. Log in, pick which workspaces the connection may reach (all of them by default — `/uproad:new` asks which workspace a new design goes to only when there is more than one), and you are back in the session. There is no `claude mcp add` step and no token to copy.
 
-(A workspace token — `up_`, issued by an admin under Settings → API Tokens — also works, but reaches only that one workspace. Keep those for CI.)
+The connection shows up at [uproad.design/settings/personal-tokens](https://uproad.design/settings/personal-tokens) as **Claude Code（claude.ai）**. Revoke it there to disconnect; Claude Code will ask you to sign in again the next time.
+
+**Updating from 0.5 or earlier:** the stored API token is no longer used. Run `/mcp` → uproad → Authenticate once after updating. (Tokens still work for CI through the [CLI](https://www.npmjs.com/package/uproad) and the GitHub Action.)
 
 ## What it does
 
@@ -72,7 +74,7 @@ Guest pinned comments are a Team-plan feature; on Free and Personal the client s
 
 ## Underneath
 
-The plugin talks to Uproad's MCP server at `https://uproad.design/mcp` (Streamable HTTP, stateless, bearer auth). The same tools are available to any MCP client — see the [MCP docs](https://uproad.design/docs/mcp) if you want to use them directly, or [`npx uproad`](https://www.npmjs.com/package/uproad) for the command line.
+The plugin talks to Uproad's MCP server at `https://uproad.design/mcp` (Streamable HTTP, stateless). Sign-in is OAuth 2.1: Uproad is its own authorization server, identifies Claude Code by its Client ID Metadata Document, and hands back a personal token as the access token — so nothing about permissions or workspaces differs from a token you would have pasted by hand. The same server can be added to claude.ai as a custom connector, and the same tools are available to any MCP client — see the [MCP docs](https://uproad.design/docs/mcp), or [`npx uproad`](https://www.npmjs.com/package/uproad) for the command line.
 
 ## License
 
