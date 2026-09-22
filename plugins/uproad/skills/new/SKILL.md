@@ -83,7 +83,7 @@ Only after approval.
 
 ### 4a. Find where this design lives
 
-The token may reach more than one workspace (a personal token reaches every workspace the user belongs to). Nothing is remembered between sessions — Uproad itself is the record of where a design lives — so look it up:
+The connection may reach more than one workspace (by default it reaches every workspace the user belongs to; the consent screen can narrow it). Nothing is remembered between sessions — Uproad itself is the record of where a design lives — so look it up:
 
 1. `list_designs` (no arguments). Every row carries its `workspace` and `external_key`. Look for a row whose `external_key` is exactly `designs/<slug>/index.html`.
 2. **Exactly one match** → this is a re-push. Its `workspace` is where it goes; nothing to ask. Note its `is_public` for 4b.
@@ -138,9 +138,9 @@ Then offer `/uproad:review` for when the comments come back.
 
 ## When things fail
 
-- **401** — the API token is wrong or revoked. It is set in the plugin's configuration (`/plugin` → uproad → configure), not in a file. A personal token also stops working if the account was deleted.
-- **`workspace is required`** — the token reaches more than one workspace and `push_design` was called without `workspace`. The error lists the candidates; go back to 4a rather than guessing.
-- **`workspace not found`** — the token cannot reach that workspace (not a member, or the token was issued for a subset). `list_workspaces` shows what it can reach.
+- **401** — the connection was revoked (Settings → Personal tokens in Uproad) or never made. Tell the user to run `/mcp`, pick uproad and choose Authenticate; the browser opens Uproad's consent screen. Nothing is stored in a file.
+- **`workspace is required`** — the connection reaches more than one workspace and `push_design` was called without `workspace`. The error lists the candidates; go back to 4a rather than guessing.
+- **`workspace not found`** — the connection cannot reach that workspace (not a member, or it was narrowed on the consent screen). `list_workspaces` shows what it can reach.
 - **`title is required`** — you passed neither `design_id` nor a matching `external_key` and no title. Give a title on first push.
 - **`project not found`** — projects are never created implicitly. Run `list_projects` and use an existing name, or create it in the app.
 - **quota exceeded** — the workspace hit its storage limit. Free is 200MB.

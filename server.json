@@ -3,7 +3,7 @@
   "name": "design.uproad/uproad",
   "title": "Uproad",
   "description": "Share prototypes as private links clients open without an account, attach specs, read comments.",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "websiteUrl": "https://uproad.design",
   "repository": {
     "url": "https://github.com/naruto1031/uproad-plugin",
@@ -16,8 +16,8 @@
       "headers": [
         {
           "name": "Authorization",
-          "description": "Bearer <token>. Create a personal token at https://uproad.design/settings/personal-tokens (any member, reaches every workspace you belong to), or a workspace token at https://uproad.design/settings/tokens (admins only).",
-          "isRequired": true,
+          "description": "Optional. Without it the server answers 401 with OAuth discovery (Client ID Metadata Documents, PKCE) and the client signs in through the browser. Clients that cannot do OAuth may instead send `Bearer <token>` with a personal token from https://uproad.design/settings/personal-tokens or a workspace token from https://uproad.design/settings/tokens (admins only).",
+          "isRequired": false,
           "isSecret": true
         }
       ]

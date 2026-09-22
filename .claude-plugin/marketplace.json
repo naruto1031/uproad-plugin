@@ -10,7 +10,7 @@
       "name": "uproad",
       "source": "./plugins/uproad",
       "description": "Turn a client brief into a prototype and a spec, share one link the client can open without an account, and fold their comments back in.",
-      "version": "0.5.0",
+      "version": "0.6.0",
       "author": {
         "name": "naruto1031"
       }

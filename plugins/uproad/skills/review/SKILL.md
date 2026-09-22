@@ -10,7 +10,7 @@ The client left comments on a link you sent. This skill turns that into a new ve
 
 ## 1. Read what came back
 
-1. `list_designs` — find the design if the user did not name one. Match on title or `external_key`. Every row carries its `workspace`; with a personal token the list spans every workspace you can reach, so if the same title or key turns up in two workspaces, **ask which one** rather than picking. Everything after this is keyed by `design_id`, which already pins the workspace.
+1. `list_designs` — find the design if the user did not name one. Match on title or `external_key`. Every row carries its `workspace`; the list spans every workspace the connection can reach, so if the same title or key turns up in two workspaces, **ask which one** rather than picking. Everything after this is keyed by `design_id`, which already pins the workspace.
 2. `list_comments` with `unresolved_only: true`.
 
 If nothing is unresolved, say so and stop. Do not invent work.
@@ -64,7 +64,7 @@ If nothing needs the client's input, say the round is closed.
 
 ## When things fail
 
-- **404 on the design** — the token cannot reach the workspace it lives in. A workspace token (`up_`) reaches one workspace only; a personal token (`upu_`) reaches the workspaces you are a member of, or the subset chosen when it was issued. `list_workspaces` shows what this token can see.
+- **404 on the design** — the connection cannot reach the workspace it lives in (not a member, or the reach was narrowed on the consent screen when signing in). `list_workspaces` shows what it can see; to widen it, revoke the connection under Settings → Personal tokens and sign in again with `/mcp`.
 - **A comment will not resolve** — it may already be resolved, or belong to another design. Re-run `list_comments` and check.
 - **Port already in use** — another design's server may already be serving the same `designs/` root; reuse it. Otherwise pick a free port.
 - **The prototype has moved on since the comment** — a comment pinned to an element that no longer exists is still real feedback. Say which version it was left against and ask rather than guessing.

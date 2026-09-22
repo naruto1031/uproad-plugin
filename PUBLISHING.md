@@ -2,7 +2,7 @@
 
 Two independent distribution surfaces. Neither blocks the other, and the marketplace works the moment this repository is public — no review needed for that path.
 
-## 1. Claude Code community marketplace
+## 1. Claude plugin directory (`claude-plugins-official`)
 
 Users can already install from this repository directly:
 
@@ -11,17 +11,31 @@ Users can already install from this repository directly:
 /plugin install uproad@uproad
 ```
 
-To also get listed in Anthropic's reviewed `claude-community` catalog:
+To appear in the plugin directory that every Claude Code and Cowork user sees without adding a marketplace (surfaced in Claude Code as the `claude-plugins-official` marketplace — checked against [claude.com/docs/plugins/submit](https://claude.com/docs/plugins/submit) on 2026-09-22):
 
-1. Validate first — the review pipeline runs this same check, plus automated safety screening:
+1. The repository must be public (closed source is not accepted). Validate first — the review pipeline runs the same check plus automated safety screening:
    ```bash
    claude plugin validate ./plugins/uproad --strict
    ```
-2. Submit at **[platform.claude.com/plugins/submit](https://platform.claude.com/plugins/submit)**.
-   The claude.ai form (`claude.ai/admin-settings/directory/submissions/plugins/new`) needs a Team or Enterprise organisation; the Console form is the one for individual authors.
-3. Approved plugins are pinned to a commit SHA in [`anthropics/claude-plugins-community`](https://github.com/anthropics/claude-plugins-community), and CI bumps that pin as this repository moves. The public catalog syncs nightly, so listing lags approval.
+2. Submit the GitHub link through one of the in-app forms:
+   - **Console** — [platform.claude.com/plugins/submit](https://platform.claude.com/plugins/submit). Needs a Developer, Admin or Owner role on a Console organisation; this is the form for individual authors.
+   - **claude.ai** — [claude.ai/admin-settings/directory/submissions/plugins/new](https://claude.ai/admin-settings/directory/submissions/plugins/new). Needs a Team or Enterprise organisation with directory management access (Owners by default).
+3. Anthropic runs a basic automated review and lists the plugin as a community plugin. "Anthropic Verified" is a separate, deeper review with no guarantee. Review time varies with the queue.
+4. After publication, pushes to this repository are mirrored automatically (CI re-runs the screening on each update) — no re-submission for updates.
 
-`claude-plugins-official` is curated by Anthropic at their discretion. There is no application process and the submission form does not feed into it.
+Plugins that bundle a connector already in the Connectors Directory are more likely to be verified and show fewer warnings, so listing the MCP server there (below) helps this listing too.
+
+## 1b. Connectors Directory (the MCP server itself)
+
+Listing `https://uproad.design/mcp` in the [Connectors Directory](https://claude.com/docs/connectors/directory) puts Uproad in the connector list of claude.ai, Desktop, mobile, Code and Cowork, and makes it eligible for in-chat "suggested connectors". Requirements checked on 2026-09-22 ([submission guide](https://claude.com/docs/connectors/building/submission), [pre-submission checklist](https://claude.com/docs/connectors/building/review-criteria)):
+
+- Submission happens in the claude.ai admin portal ([claude.ai/admin-settings/directory/submissions/new](https://claude.ai/admin-settings/directory/submissions/new)) and **requires a Team or Enterprise organisation** — there is no Console form for connectors.
+- OAuth 2.0 for authentication (the server does CIMD + PKCE; DCR is not implemented and not required).
+- Every tool needs a `title` and `readOnlyHint` / `destructiveHint` (done server-side, uproad PR #47).
+- Public documentation ([uproad.design/docs/mcp](https://uproad.design/docs/mcp)), privacy policy URL, support contact, icon, and a fully populated test account the reviewer can sign in with.
+- Seven policy acknowledgements; the server must call first-party APIs on a domain matching the product (it does).
+
+Submissions are auto-scanned and listed as community connectors; Anthropic escalates useful ones to verified review on its own.
 
 ## 2. MCP registry
 
