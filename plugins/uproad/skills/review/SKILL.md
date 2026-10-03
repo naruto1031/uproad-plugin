@@ -11,11 +11,13 @@ The client left comments on a link you sent. This skill turns that into a new ve
 ## 1. Read what came back
 
 1. `list_designs` — find the design if the user did not name one. Match on title or `external_key`. Every row carries its `workspace`; the list spans every workspace the connection can reach, so if the same title or key turns up in two workspaces, **ask which one** rather than picking. Everything after this is keyed by `design_id`, which already pins the workspace.
-2. `list_comments` with `unresolved_only: true`.
+2. `list_comments` with `unresolved_only: true`. Each item is one thread, newest first: `body` is the message that opened it and `replies` holds the rest, oldest first.
 
 If nothing is unresolved, say so and stop. Do not invent work.
 
-Read all of them before touching anything. Clients contradict themselves across comments, and the second one usually wins — better to notice that now than to implement both.
+Read all of them before touching anything, replies included. Clients contradict themselves across comments, and the second one usually wins — better to notice that now than to implement both. Inside a thread the same applies: the last word often revises the first, and a `team` reply may already have agreed a direction with the client.
+
+`author` is `client` (someone reviewing through the share link) or `team` (a member of the workspace). Names are not included. A `team` reply is your own side answering — treat it as something already agreed, not as a new request.
 
 Sort each comment into one of three piles, and say which pile you put things in:
 
@@ -23,7 +25,21 @@ Sort each comment into one of three piles, and say which pile you put things in:
 - **Questions** — the client is asking, not instructing. **You cannot answer these**: the MCP tools have no reply. Collect them and hand them to the user to answer in the app
 - **Out of scope or contradictory** — anything that needs a decision you should not make alone (budget, scope, something that breaks a stated requirement). Surface it, do not quietly implement or quietly drop it
 
-Comments carry `pin_x`/`pin_y` when the client pinned them to a spot on the prototype. Use that to locate what they meant, and say which element you think a pin refers to when it is ambiguous — a misread pin produces a confidently wrong fix.
+### Find what each comment points at
+
+A misread pin produces a confidently wrong fix, so locate every pinned comment in the HTML before changing anything. `pin` says where the client clicked; it is `null` for a comment about the whole page.
+
+- **`pin.element.selector`** — the CSS selector of the element they clicked. Look it up in the HTML from `get_design_html` (step 2). Selectors are positional (`nth-of-type`), so they can drift when the markup changes.
+- **`pin.element.text`** — that element's visible text (up to 120 characters). Use it to confirm the selector landed on the right element, and search the HTML for it when the selector no longer matches. When the two disagree, trust the text.
+- **`pin.element.offset`** — where inside the element they clicked, from 0 to 1 (`x` 0 = left edge, `y` 0 = top edge). It matters for large elements: a card, an image, a table.
+- **`pin.screen`** — which screen of a multi-screen prototype it was left on: `container` is the screen's container selector, `location` the hash (`#pricing`). Change the element on that screen, not one with the same structure on another screen.
+- **`pin.page`** — the position as a 0–1 ratio of the whole page. Rough; use it only when `element` is `null`.
+- **`pin.viewport`** — the reviewer's window size. Around 390 wide means they were on a phone: look at the layout at that width before deciding what is wrong, because the same element can be fine on a desktop.
+- **`version` / `on_current_version`** — `false` means it was left on an older version. Check whether the current one already deals with it before changing anything, and say which version it came from.
+
+`pin_x` / `pin_y` are older copies of `pin.page`; ignore them.
+
+When a pin still cannot be placed, or could mean two different elements, say which one you think it refers to and why, and ask before changing it.
 
 ## 2. Make the changes
 
@@ -55,7 +71,7 @@ Give the user the direct URL (`http://localhost:4173/<slug>/`) and **stop, askin
 
 In Japanese:
 
-- **対応した** — comment → what changed, one line each
+- **対応した** — comment → what changed, one line each. Name the element the way the client sees it (its text, e.g. 「申請を開始する」ボタン), not by its selector
 - **確認したい** — the questions, quoted, so the user can paste them back to the client. Say plainly that these are still open in Uproad and need a reply in the app
 - **対応していない** — with the reason. Say it out loud rather than leaving it to be discovered
 - The share link is unchanged — say so. Clients worry that a new version means a new URL
@@ -67,4 +83,4 @@ If nothing needs the client's input, say the round is closed.
 - **404 on the design** — the connection cannot reach the workspace it lives in (not a member, or the reach was narrowed on the consent screen when signing in). `list_workspaces` shows what it can see; to widen it, revoke the connection under Settings → Personal tokens and sign in again with `/mcp`.
 - **A comment will not resolve** — it may already be resolved, or belong to another design. Re-run `list_comments` and check.
 - **Port already in use** — another design's server may already be serving the same `designs/` root; reuse it. Otherwise pick a free port.
-- **The prototype has moved on since the comment** — a comment pinned to an element that no longer exists is still real feedback. Say which version it was left against and ask rather than guessing.
+- **The prototype has moved on since the comment** — a comment pinned to an element that no longer exists is still real feedback. Search for `pin.element.text` first; if it is gone too, say which version it was left against (`version`) and ask rather than guessing.
