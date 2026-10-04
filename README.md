@@ -7,7 +7,7 @@ Take a client brief to a link the client can actually open — without leaving C
 ## Install
 
 ```
-/plugin marketplace add naruto1031/uproad-plugin
+/plugin marketplace add uproad-design/uproad-plugin
 /plugin install uproad@uproad
 ```
 

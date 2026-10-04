@@ -7,7 +7,7 @@ Two independent distribution surfaces. Neither blocks the other, and the marketp
 Users can already install from this repository directly:
 
 ```
-/plugin marketplace add naruto1031/uproad-plugin
+/plugin marketplace add uproad-design/uproad-plugin
 /plugin install uproad@uproad
 ```
 
@@ -46,7 +46,7 @@ The server name must match the authentication method:
 | Method | Required name | Setup |
 | --- | --- | --- |
 | Domain (current `server.json`) | `design.uproad/*` | DNS TXT record |
-| GitHub | `io.github.naruto1031/*` | none |
+| GitHub | `io.github.uproad-design/*` | none |
 
 Domain-based is what `server.json` currently uses, because it ties the server to the product rather than to a GitHub account. Switching to GitHub auth means changing the `name` field and running `mcp-publisher login github` instead.
 
